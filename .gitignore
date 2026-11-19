@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+benchmark_data/
+reports/*
+!reports/test_small/
+!reports/test_mid/
+*.egg-info/
+hackathon/host/grading_instances.yaml
+.idea/
+.DS_Store

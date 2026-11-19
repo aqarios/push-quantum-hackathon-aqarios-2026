@@ -1,0 +1,113 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[top=60pt,bottom=60pt,left=60pt,right=60pt]{geometry}
+\usepackage{amsmath}
+%\usepackage{draftwatermark}
+\usepackage{xcolor}
+
+
+
+%\SetWatermarkText{SOLUTIONS}
+%\SetWatermarkScale{4.0} % Adjust size (default is 1)
+%\SetWatermarkAngle{45} % Diagonal angle in degrees (default is 45)
+% \SetWatermarkLightness{0.8} % Gray level from 0 (black) to 1 (white)
+%\SetWatermarkColor{red!20} % Set color to red with 20% opacity (transparent red)
+
+
+
+\begin{document}
+
+\noindent 2026.11.20-22 \hfill \textbf{PushQuantum 2026 Hackathon -- Hints} \hfill Aqarios GmbH
+
+\begin{center}
+    \Large See further hints ($XY$-mixers, warm-starts, etc.) in code files.
+\end{center}
+
+\section*{\texttt{qaoa.py}}
+
+
+\begin{itemize}
+    \item[1.] \textbf{QAOA Parameter Initialization.}
+    Take a closer look at the function
+    \texttt{\_initialize\_start\_parameters}.
+    Are the current parameter ranges appropriate?
+    Consider the periodicity of the corresponding
+    operators and whether it allows you to reduce
+    the search space. Keep in mind that different
+    mixer types may have different periodicities.
+
+
+
+    \item[2.] \textbf{Explore Alternative Mixer Layers.}
+    Certain optimization problems impose constraints
+    on the number of active bits in a solution.
+    For example, a feasible bitstring may be
+    required to contain exactly $k$ ones.
+
+    Instead of using the standard $X$-mixer,
+    consider an \textbf{XY-mixer}, which can
+    preserve the Hamming weight of a quantum state
+    and therefore keep the evolution within the
+    feasible subspace.
+
+    You can find a relevant paper in the
+    \texttt{Papers} folder.
+
+
+
+    \item[3.] \textbf{Optimize Fewer Parameters.}
+    You have already encountered different
+    parameter initialization strategies, such as
+    random initialization and ramp schedules.
+    But what if you could reduce the number of
+    parameters that need to be optimized?
+
+    One approach is the \textbf{Linear Ramp}
+    parameterization, along with its many
+    possible variations.
+
+    The key idea is to optimize only a small
+    set of parameters and derive the remaining
+    QAOA angles from them. This reduces the
+    dimensionality of the optimization problem
+    and may significantly lower the computational
+    cost of classical optimization.
+
+    You can find more information about Linear
+    Ramp in the \texttt{Papers} folder, as well
+    as numerous related approaches on arXiv.
+
+\end{itemize}
+
+
+
+
+\section*{\texttt{custom\_vqe.py}}
+
+\begin{itemize}
+    \item[1.] \texttt{\_construct\_hardware\_efficient}: Do all gates have an effect on the probabilities? Unnecessary gates may increase the runtime.
+
+
+
+    \item[2.] \texttt{\_construct\_real\_amplitudes}: Can the $CX$ block be simplified?
+    
+
+    
+    \item[3.] Expectation matters: Are there other ways such as CVAR and Mean to implement \texttt{cost\_function}?
+    
+
+
+\end{itemize}
+
+
+\section*{Additional ideas}
+
+\begin{itemize}
+    \item[1.] Think about the scaling of the model (penalty terms, overall scaling). A similar scaling of the objective over all problems can have some advantages.
+    \item[2.] How does the performance depend on the number of layers?
+    \item[3.] There are not only $XY$-mixers, e.g.\ Dicke mixers, 2-way $XY$-mixers, etc. There is also MOQAOA: constraints without slack, penalty is tuned beforehand. You may also consider counter-diabatic mixers.
+    \item[4.] You may consider not only linear ramps, but also non-linear ramps. 
+\end{itemize}
+
+
+
+\end{document}

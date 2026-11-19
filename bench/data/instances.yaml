@@ -1,0 +1,181 @@
+# Benchmark instances, loaded by bench.utils.build_modelset. One entry per instance:
+#   name:      model name, "<problem class>_<size>"
+#   generator: luna_usecases collection generator, "<module>.<Collection>.<method>"
+#   params:    arguments of the generator (min = max size, so every entry gives exactly one instance)
+#   tags:      optional labels of your own, selectable with run_benchmark.py --tag
+#
+# Size classes (SIZES in bench/rules.py) by the number of QUBO variables, slack variables included, i.e. the
+# qubits with one qubit per variable; run_benchmark.py --size <class> runs a class and all smaller ones:
+#
+#   small        1-8  qubits   10 instances
+#   mid          9-16 qubits   27 instances
+#   large       17-20 qubits    7 instances
+#   very-large  21-24 qubits    3 instances
+#
+# Problem classes (name prefix):
+#
+#   maxcut       no constraints (MaxCut on random regular graphs)
+#   traffic      one-hot: every car takes exactly one of three routes
+#   qap          two-way one-hot: quadratic assignment, a permutation matrix
+#   container    inequalities with integer coefficients: container assignment, track capacities
+#   setpacking   set packing inequalities, sum <= 1
+#   pas          mixed: one-hot + slot inequalities + precedence (production assignment and scheduling)
+#   partition    k-hot equality: balanced graph partitioning, sum_i x_i = n/2 (no slack), quadratic objective
+#   vertexcover  covering inequalities: minimum vertex cover, x_i + x_j >= 1 per edge (one slack bit each)
+#   facility     one-hot + implications: uncapacitated facility location, every customer is served by exactly
+#                one open facility (x_ij <= y_j, one slack bit each)
+#
+# Below, the instances by size class, inside a class by problem class and size; the comment after each name
+# gives the model's variables and its QUBO variables. At most 24 QUBO variables, so one qubit per variable
+# fits into MAX_QUBITS = 25. The optimum of every instance is computed by SCIP when the benchmark runs
+# (feature "optimum").
+
+problems:
+  # ---- small: 1-8 qubits (10 instances) ----
+  - name: maxcut_n4        # 4 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 4, max_num_nodes: 4, degree: 3, seed: 1}
+  - name: maxcut_n5        # 5 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 5, max_num_nodes: 5, degree: 2, seed: 1}
+  - name: maxcut_n6        # 6 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 6, max_num_nodes: 6, degree: 3, seed: 1}
+  - name: traffic_c2       # 6 QUBO variables
+    generator: traffic_flow.TrafficFlowCollection.from_random
+    params: {min_cars: 2, max_cars: 2, n_routes_per_car: 3, seed: 1}
+  - name: qap_f2           # 4 QUBO variables
+    generator: quadratic_assignment_problem.QapCollection.from_random
+    params: {min_size: 2, max_size: 2, seed: 1}
+  - name: container_c3     # 3 variables, 5 QUBO variables
+    generator: container_assignment.ContainerAssignmentCollection.from_random
+    params: {min_containers: 3, max_containers: 3, n_tracks: 2, seed: 2}
+  - name: setpacking_e3    # 4 variables, 7 QUBO variables
+    generator: set_packing.SetPackingCollection.from_random
+    params: {min_num_elements: 3, max_num_elements: 3, seed: 1}
+  - name: partition_n4     # 4 QUBO variables
+    generator: graph_partitioning.GraphPartitioningCollection.from_random
+    params: {min_nodes: 4, max_nodes: 4, edge_prob: 0.5, seed: 1}
+  - name: partition_n8     # 8 QUBO variables
+    generator: graph_partitioning.GraphPartitioningCollection.from_random
+    params: {min_nodes: 8, max_nodes: 8, edge_prob: 0.5, seed: 1}
+  - name: vertexcover_n4   # 4 variables, 7 QUBO variables
+    generator: minimum_vertex_cover.MinimumVertexCoverCollection.from_random
+    params: {min_nodes: 4, max_nodes: 4, edge_prob: 0.5, seed: 1}
+
+  # ---- mid: 9-16 qubits (27 instances) ----
+  - name: maxcut_n10       # 10 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 10, max_num_nodes: 10, degree: 3, seed: 1}
+  - name: maxcut_n12       # 12 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 12, max_num_nodes: 12, degree: 3, seed: 1}
+  - name: maxcut_n16       # 16 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 16, max_num_nodes: 16, degree: 3, seed: 1}
+  - name: traffic_c3       # 9 QUBO variables
+    generator: traffic_flow.TrafficFlowCollection.from_random
+    params: {min_cars: 3, max_cars: 3, n_routes_per_car: 3, seed: 1}
+  - name: traffic_c4       # 12 QUBO variables
+    generator: traffic_flow.TrafficFlowCollection.from_random
+    params: {min_cars: 4, max_cars: 4, n_routes_per_car: 3, seed: 1}
+  - name: traffic_c5       # 15 QUBO variables
+    generator: traffic_flow.TrafficFlowCollection.from_random
+    params: {min_cars: 5, max_cars: 5, n_routes_per_car: 3, seed: 1}
+  - name: qap_f3a          # 9 QUBO variables
+    generator: quadratic_assignment_problem.QapCollection.from_random
+    params: {min_size: 3, max_size: 3, seed: 1}
+  - name: qap_f3b          # 9 QUBO variables
+    generator: quadratic_assignment_problem.QapCollection.from_random
+    params: {min_size: 3, max_size: 3, seed: 2}
+  - name: qap_f4           # 16 QUBO variables
+    generator: quadratic_assignment_problem.QapCollection.from_random
+    params: {min_size: 4, max_size: 4, seed: 1}
+  - name: container_c4     # 4 variables, 9 QUBO variables
+    generator: container_assignment.ContainerAssignmentCollection.from_random
+    params: {min_containers: 4, max_containers: 4, n_tracks: 3, seed: 6}
+  - name: container_c6     # 6 variables, 12 QUBO variables
+    generator: container_assignment.ContainerAssignmentCollection.from_random
+    params: {min_containers: 6, max_containers: 6, n_tracks: 3, seed: 2}
+  - name: container_c8     # 8 variables, 15 QUBO variables
+    generator: container_assignment.ContainerAssignmentCollection.from_random
+    params: {min_containers: 8, max_containers: 8, n_tracks: 3, seed: 1}
+  - name: setpacking_e4    # 6 variables, 10 QUBO variables
+    generator: set_packing.SetPackingCollection.from_random
+    params: {min_num_elements: 4, max_num_elements: 4, seed: 1}
+  - name: setpacking_e5    # 8 variables, 12 QUBO variables
+    generator: set_packing.SetPackingCollection.from_random
+    params: {min_num_elements: 5, max_num_elements: 5, seed: 1}
+  - name: setpacking_e6    # 9 variables, 13 QUBO variables
+    generator: set_packing.SetPackingCollection.from_random
+    params: {min_num_elements: 6, max_num_elements: 6, seed: 1}
+  - name: pas_a            # 4 variables, 10 QUBO variables
+    generator: production_assignment_and_scheduling.PasCollection.from_random
+    params: {min_size: 2, max_size: 2, seed: 8}
+  - name: pas_b            # 6 variables, 13 QUBO variables
+    generator: production_assignment_and_scheduling.PasCollection.from_random
+    params: {min_size: 2, max_size: 2, seed: 2}
+  - name: pas_c            # 8 variables, 16 QUBO variables
+    generator: production_assignment_and_scheduling.PasCollection.from_random
+    params: {min_size: 2, max_size: 2, seed: 3}
+  - name: partition_n12    # 12 QUBO variables
+    generator: graph_partitioning.GraphPartitioningCollection.from_random
+    params: {min_nodes: 12, max_nodes: 12, edge_prob: 0.5, seed: 1}
+  - name: partition_n16    # 16 QUBO variables
+    generator: graph_partitioning.GraphPartitioningCollection.from_random
+    params: {min_nodes: 16, max_nodes: 16, edge_prob: 0.5, seed: 1}
+  - name: vertexcover_n5   # 5 variables, 9 QUBO variables
+    generator: minimum_vertex_cover.MinimumVertexCoverCollection.from_random
+    params: {min_nodes: 5, max_nodes: 5, edge_prob: 0.4, seed: 1}
+  - name: vertexcover_n6   # 6 variables, 13 QUBO variables
+    generator: minimum_vertex_cover.MinimumVertexCoverCollection.from_random
+    params: {min_nodes: 6, max_nodes: 6, edge_prob: 0.4, seed: 2}
+  - name: vertexcover_n8   # 8 variables, 16 QUBO variables
+    generator: minimum_vertex_cover.MinimumVertexCoverCollection.from_random
+    params: {min_nodes: 8, max_nodes: 8, edge_prob: 0.2, seed: 2}
+  - name: facility_c2a     # 6 variables, 10 QUBO variables
+    generator: uncapacitated_facility_location_problem.UflpCollection.from_random
+    params: {min_num_facilities: 2, max_num_facilities: 2, customer_ratio: 1.0, seed: 1}
+  - name: facility_c2b     # 6 variables, 10 QUBO variables
+    generator: uncapacitated_facility_location_problem.UflpCollection.from_random
+    params: {min_num_facilities: 2, max_num_facilities: 2, customer_ratio: 1.0, seed: 2}
+  - name: facility_c3a     # 8 variables, 14 QUBO variables
+    generator: uncapacitated_facility_location_problem.UflpCollection.from_random
+    params: {min_num_facilities: 2, max_num_facilities: 2, customer_ratio: 1.5, seed: 1}
+  - name: facility_c3b     # 8 variables, 14 QUBO variables
+    generator: uncapacitated_facility_location_problem.UflpCollection.from_random
+    params: {min_num_facilities: 2, max_num_facilities: 2, customer_ratio: 1.5, seed: 2}
+
+  # ---- large: 17-20 qubits (7 instances) ----
+  - name: maxcut_l20       # 20 QUBO variables
+    generator: maxcut.MaxcutCollection.from_random_regular
+    params: {min_num_nodes: 20, max_num_nodes: 20, degree: 3, seed: 31}
+  - name: traffic_l6       # 18 QUBO variables
+    generator: traffic_flow.TrafficFlowCollection.from_random
+    params: {min_cars: 6, max_cars: 6, n_routes_per_car: 3, seed: 31}
+  - name: container_l10    # 10 variables, 18 QUBO variables
+    generator: container_assignment.ContainerAssignmentCollection.from_random
+    params: {min_containers: 10, max_containers: 10, n_tracks: 3, seed: 33}
+  - name: setpacking_l8    # 12 variables, 20 QUBO variables
+    generator: set_packing.SetPackingCollection.from_random
+    params: {min_num_elements: 8, max_num_elements: 8, seed: 31}
+  - name: partition_l20    # 20 QUBO variables
+    generator: graph_partitioning.GraphPartitioningCollection.from_random
+    params: {min_nodes: 20, max_nodes: 20, edge_prob: 0.5, seed: 31}
+  - name: vertexcover_l12  # 12 variables, 19 QUBO variables
+    generator: minimum_vertex_cover.MinimumVertexCoverCollection.from_random
+    params: {min_nodes: 12, max_nodes: 12, edge_prob: 0.2, seed: 33}
+  - name: facility_l2      # 10 variables, 18 QUBO variables
+    generator: uncapacitated_facility_location_problem.UflpCollection.from_random
+    params: {min_num_facilities: 2, max_num_facilities: 2, customer_ratio: 2.0, seed: 31}
+
+  # ---- very-large: 21-24 qubits (3 instances) ----
+  - name: pas_x24          # 12 variables, 24 QUBO variables
+    generator: production_assignment_and_scheduling.PasCollection.from_random
+    params: {min_size: 3, max_size: 3, seed: 32}
+  - name: partition_x24    # 24 QUBO variables
+    generator: graph_partitioning.GraphPartitioningCollection.from_random
+    params: {min_nodes: 24, max_nodes: 24, edge_prob: 0.5, seed: 41}
+  - name: facility_x22     # 12 variables, 22 QUBO variables
+    generator: uncapacitated_facility_location_problem.UflpCollection.from_random
+    params: {min_num_facilities: 2, max_num_facilities: 2, customer_ratio: 2.5, seed: 41}
