@@ -133,16 +133,18 @@ into one project and benchmark them together.
    installs it.
 7. Check: `uv run pytest` also runs each of your algorithms on a 3-variable MaxCut and expects the optimum
    among the samples.
-8. Hand in: commit your folder, `pyproject.toml` and `uv.lock` on `team/<team>`. Then choose one of three ways:
-   - This repository: `git push -u origin team/<team>`. Ask the mentors for write access first. Note that every
-     other team can read your branch here.
-   - A private GitHub repository of your team: create an empty private repository (not a fork: a fork of a public
-     repository is public), add it with `git remote add team <url>`, push with `git push -u team team/<team>`,
-     and invite the mentors' GitHub account as collaborator (the mentors tell you its name).
-   - A bundle file: `git bundle create <team>.bundle main..team/<team>`; give the file to the mentors.
+8. Hand in: Commit your team's folder, `pyproject.toml`, and `uv.lock` on `team/<team>`. Then package your submission using one of the following methods:
 
-Change nothing outside your folder, except your group in `pyproject.toml` and `uv.lock`, which uv writes. The
-mentors check every submission with `bench/check_submission.py`, which rejects other changes.
+- ZIP archive (recommended): Create a ZIP file containing your team's folder, `pyproject.toml`, and `uv.lock`.
+- Git bundle: Create a bundle with `git bundle create <team>.bundle main..team/<team>`.
+
+Upload your ZIP archive or Git bundle to Aqora as your submission. You may submit updated versions as often as you like. We will evaluate submissions as soon as possible and manually update the leaderboard several times a day, allowing you to track your progress and compare your results with other teams while keeping individual submissions private.
+For the final evaluation, only your latest submission uploaded before the deadline will be considered.
+
+Fallback option: If you encounter technical difficulties with Aqora, you may create a private GitHub repository (not a fork of the public repository), push your branch using `git push -u team team/<team>`, and invite the mentors' GitHub account as a collaborator. Contact the mentors for the account name and submission instructions.
+
+
+Submission scope: Only your team's folder, `pyproject.toml`, and `uv.lock` will be considered for evaluation. You may modify other files (e.g., `bench/rules.py`) locally for testing purposes, such as adjusting the maximum runtime. However, the final evaluation will use the mentors' original benchmark configuration, and any changes outside your team's folder will be ignored. It is your responsibility to ensure that your solution works correctly with the original benchmark setup. Any failures caused by incompatibilities with that setup are the team's responsibility.
 
 `bench/building_blocks.py` has the fixed building blocks (QUBO and Ising form, cost functions such as CVaR);
 copy one into your folder to change it, or add another transformation or encoding (see "Good to know"), and
